@@ -35,18 +35,7 @@ export const Hero = () => {
       <div className="container relative z-10 px-4">
         <div className="max-w-4xl mx-auto text-center">
           {/* Badge */}
-          <motion.div initial={{
-          opacity: 0,
-          y: 20
-        }} animate={{
-          opacity: 1,
-          y: 0
-        }} transition={{
-          duration: 0.5
-        }} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-foreground/10 border border-primary-foreground/20 text-primary-foreground/90 text-sm font-medium mb-8">
-            <Sparkles className="w-4 h-4" />
-            AI-Powered Academic Excellence
-          </motion.div>
+          
 
           {/* Main heading */}
           <motion.h1 initial={{
