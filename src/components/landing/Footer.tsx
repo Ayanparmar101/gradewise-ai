@@ -61,16 +61,7 @@ export const Footer = () => {
           </div>
 
           {/* Links */}
-          <div>
-            <h4 className="font-display font-semibold mb-4">Product</h4>
-            <ul className="space-y-3">
-              {footerLinks.product.map(link => <li key={link.href}>
-                  <Link to={link.href} className="text-sm text-sidebar-foreground/70 hover:text-sidebar-foreground transition-colors">
-                    {link.label}
-                  </Link>
-                </li>)}
-            </ul>
-          </div>
+          
 
           <div>
             <h4 className="font-display font-semibold mb-4">Company</h4>
