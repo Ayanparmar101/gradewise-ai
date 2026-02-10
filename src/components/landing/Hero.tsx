@@ -82,7 +82,7 @@ export const Hero = () => {
             <Link to="/login">
               
             </Link>
-            <Link to="/demo">
+            <Link to="/features">
               <Button variant="hero-outline" size="xl">
                 Watch Demo
               </Button>

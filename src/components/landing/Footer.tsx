@@ -9,7 +9,7 @@ const footerLinks = {
     href: "/pricing"
   }, {
     label: "Demo",
-    href: "/demo"
+    href: "/features"
   }, {
     label: "Documentation",
     href: "/docs"
