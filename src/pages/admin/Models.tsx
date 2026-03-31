@@ -21,14 +21,35 @@ const AdminModels = () => {
   const [editing, setEditing] = useState<Model | null>(null);
   const [form, setForm] = useState({ name: "", description: "", version: "" });
 
+  const apiUrl = import.meta.env.VITE_API_URL || '';
+
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) setModels(JSON.parse(raw));
-    } catch (e) {}
+    if (!apiUrl) {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) setModels(JSON.parse(raw));
+      } catch (e) {}
+      return;
+    }
+
+    (async () => {
+      try {
+        const res = await fetch(`${apiUrl.replace(/\/$/, '')}/models`);
+        if (!res.ok) throw new Error('fetch failed');
+        const data = await res.json();
+        setModels(Array.isArray(data) ? data : []);
+      } catch (e) {
+        // fallback to local
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (raw) setModels(JSON.parse(raw));
+        } catch {}
+      }
+    })();
   }, []);
 
   useEffect(() => {
+    // keep local copy in case backend is not configured
     localStorage.setItem(STORAGE_KEY, JSON.stringify(models));
   }, [models]);
 
@@ -41,20 +62,49 @@ const AdminModels = () => {
     if (e) e.preventDefault();
     if (!form.name.trim()) return;
 
-    if (editing) {
-      setModels(prev => prev.map(m => m.id === editing.id ? { ...m, ...form } : m));
-    } else {
-      const newModel: Model = {
-        id: Date.now().toString(36),
-        name: form.name.trim(),
-        description: form.description.trim(),
-        version: form.version.trim(),
-        createdAt: new Date().toISOString(),
-      };
-      setModels(prev => [newModel, ...prev]);
-    }
+    (async () => {
+      if (apiUrl) {
+        try {
+          if (editing) {
+            const res = await fetch(`${apiUrl.replace(/\/$/, '')}/models/${editing.id}`, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(form),
+            });
+            if (!res.ok) throw new Error('update failed');
+            const updated = await res.json();
+            setModels(prev => prev.map(m => m.id === updated.id ? updated : m));
+          } else {
+            const res = await fetch(`${apiUrl.replace(/\/$/, '')}/models`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(form),
+            });
+            if (!res.ok) throw new Error('create failed');
+            const created = await res.json();
+            setModels(prev => [created, ...prev]);
+          }
+          resetForm();
+          return;
+        } catch (e) {
+          // fallthrough to local behavior
+        }
+      }
 
-    resetForm();
+      if (editing) {
+        setModels(prev => prev.map(m => m.id === editing.id ? { ...m, ...form } : m));
+      } else {
+        const newModel: Model = {
+          id: Date.now().toString(36),
+          name: form.name.trim(),
+          description: form.description.trim(),
+          version: form.version.trim(),
+          createdAt: new Date().toISOString(),
+        };
+        setModels(prev => [newModel, ...prev]);
+      }
+      resetForm();
+    })();
   }
 
   function onEdit(m: Model) {
@@ -64,7 +114,19 @@ const AdminModels = () => {
 
   function onDelete(id: string) {
     if (!confirm("Delete this model?")) return;
-    setModels(prev => prev.filter(m => m.id !== id));
+    (async () => {
+      if (apiUrl) {
+        try {
+          const res = await fetch(`${apiUrl.replace(/\/$/, '')}/models/${id}`, { method: 'DELETE' });
+          if (!res.ok && res.status !== 204) throw new Error('delete failed');
+          setModels(prev => prev.filter(m => m.id !== id));
+          return;
+        } catch (e) {
+          // fallback
+        }
+      }
+      setModels(prev => prev.filter(m => m.id !== id));
+    })();
   }
 
   return (
