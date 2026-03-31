@@ -31,3 +31,7 @@ Notes
 Keep your service role key secret. Use this backend when you need server-side access to Supabase.
 
 The models endpoints use a JSON file under `server/data/models.json` for simple persistence. This is suitable for development and small deployments.
+
+Admin protection
+
+Set `ADMIN_API_KEY` in `server/.env` and include the header `x-admin-key: <ADMIN_API_KEY>` in requests to the models endpoints. If the key is missing or invalid the server will return `401 Unauthorized`.
