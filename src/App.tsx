@@ -17,6 +17,7 @@ import StudentGrades from "./pages/student/Grades";
 import StudentSettings from "./pages/student/Settings";
 import ProfessorDashboard from "./pages/professor/Dashboard";
 import AdminDashboard from "./pages/admin/Dashboard";
+import AdminModels from "./pages/admin/Models";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -42,6 +43,7 @@ const App = () => (
           <Route path="/student/settings" element={<StudentSettings />} />
           <Route path="/professor/dashboard" element={<ProfessorDashboard />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/admin/models" element={<AdminModels />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

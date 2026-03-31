@@ -5,6 +5,8 @@ import { Users, GraduationCap, Cpu, Activity, FileText, Shield, TrendingUp } fro
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
 const systemMetrics = [
   { label: "AI Model Accuracy", value: 94.2, status: "healthy" },
@@ -66,6 +68,12 @@ const AdminDashboard = () => {
             variant="warning"
             delay={0.3}
           />
+        </div>
+
+        <div className="pt-4">
+          <Link to="/admin/models">
+            <Button>Manage Models</Button>
+          </Link>
         </div>
 
         <div className="grid lg:grid-cols-3 gap-6">
